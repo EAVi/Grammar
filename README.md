@@ -41,7 +41,7 @@ FIRST(T) = { (, i }
 FOLLOW(T) = { $, ), + }
 ```
 
-#Complexity
+# Complexity
 
 Constructing the FIRST set is of O(m\*n<sup>2</sup>), where m is the number of rules per production, and n is the number of productions.
 
