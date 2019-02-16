@@ -45,6 +45,6 @@ FOLLOW(T) = { $, ), + }
 
 Constructing the FIRST set is of O(m\*n<sup>2</sup>), where m is the number of rules per production, and n is the number of productions.
 
-Constructing the FOLLOW set is of O(l\*m\*n<sup>2<\sup>), where m is the number of rules per production, n is the number of productions, and l is the length of each production rule.
+Constructing the FOLLOW set is of O(l\*m\*n<sup>2</sup>), where m is the number of rules per production, n is the number of productions, and l is the length of each production rule.
   
 There are probably better approaches to constructing the sets, but the algorithm works.
