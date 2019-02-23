@@ -56,6 +56,11 @@ bool Production::operator<(const Production & rhs) const
 	return this->m_symbol < rhs.m_symbol;
 }
 
+bool Production::operator==(const Production & rhs) const
+{
+	return this->m_symbol == rhs.m_symbol;
+}
+
 void Production::print()
 {
 	cout << m_symbol << " -> ";

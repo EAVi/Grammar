@@ -7,6 +7,8 @@
 
 const char epsilon = '?'; //the empty character variable
 
+class AugmentedProduction;
+
 class Production
 {
 public:
@@ -15,6 +17,7 @@ public:
 	Production(std::string rule);
 	void read_rule(std::string rule);//read the entire production rule. 
 	bool operator<(const Production & rhs)const;
+	bool operator==(const Production & rhs)const;
 	void print();
 	char get_symbol();
 	const std::vector<std::string> & get_rules() const;
@@ -27,12 +30,13 @@ public:
 	bool add_follow(char c)const;//returns whether the set changed
 	bool add_follow(const std::set<char> s)const;//returns whether the set changed
 	
-private:
+protected:
 	char m_symbol;
 	std::vector<std::string> m_rules;//rules of production
 	mutable std::set<char> m_first;//mutable because std::set is strict with constness
 	mutable std::set<char> m_follow;
 	friend Production;
+	friend AugmentedProduction;
 };
 
 #endif

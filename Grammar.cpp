@@ -35,6 +35,7 @@ void Grammar::generate_sets()
 {
 	m_generate_first();
 	m_generate_follow();
+	m_generate_lr();
 }
 
 void Grammar::print_sets()
@@ -42,6 +43,11 @@ void Grammar::print_sets()
 	for(auto val : m_production)
 	{
 		val.print();//change me later
+	}
+	for(int i = 0, j = m_lr_closures.size(); i < j; ++i)
+	{
+		cout << "LR(0) sets for item I" << i << endl;
+		m_lr_closures[i].print_productions(i);
 	}
 }
 
@@ -144,4 +150,29 @@ bool Grammar::m_follow()
 	}
 	
 	return changed;
+}
+
+void Grammar::m_generate_lr()
+{
+	Production start = *find_production(m_initial_symbol);
+	AugmentedProduction I(start, m_production);
+	I.closure();
+	m_lr_closures.push_back(I);
+	
+	bool changed = true;
+	while(changed)
+	{
+		changed = false;
+		for(int i = 0, j = m_lr_closures.size(); i < j; ++i)
+		{
+			try{
+			changed |= m_lr_closures[i].goto_all(m_lr_closures);
+			m_lr_closures[i].closure();
+			}
+			catch(exception & e)
+			{
+				cout << "we segfaulting" << e.what() << endl;
+			}
+		}
+	}
 }
