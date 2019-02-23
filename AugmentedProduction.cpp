@@ -6,8 +6,8 @@ using namespace std;
 
 bool operator==(Transition lhs, Transition rhs)
 {
-	return (lhs.X == rhs.X 
-		&& lhs.index == rhs.index);
+	return (lhs.X == rhs.X);
+		//&& lhs.index == rhs.index);
 }
 
 AugmentedProduction::AugmentedProduction(const Production & p, const set<Production>& s, int rule, int marker)
@@ -87,7 +87,7 @@ bool AugmentedProduction::goto_all(vector<AugmentedProduction>& augvec)
 	//goto on all of the closure productions
 	for(auto & prod : m_closure)
 	{
-		for(int i = 0, j = m_production.m_rules.size(); i < j; ++i)
+		for(int i = 0, j = prod.m_rules.size(); i < j; ++i)
 		{
 			changed |= add_goto(augvec, prod, i, 1);
 		}
@@ -97,6 +97,7 @@ bool AugmentedProduction::goto_all(vector<AugmentedProduction>& augvec)
 
 bool AugmentedProduction::add_goto(vector<AugmentedProduction>& augvec, Production& p, int rule, int marker)
 {
+	if(rule >= p.m_rules.size()) return false;
 	AugmentedProduction candidate(p, m_productions, rule, marker);
 	auto augment_it = find(augvec.begin(), augvec.end(), candidate);
 	if(augment_it == augvec.end())
@@ -107,7 +108,6 @@ bool AugmentedProduction::add_goto(vector<AugmentedProduction>& augvec, Producti
 		augvec.push_back(candidate);
 		return true;
 	}
-	
 	//try to add the transition
 	Transition t = {p.m_rules[rule][marker - 1], (int)distance(augvec.begin(), augment_it)};
 	auto trans_it = find(m_goto.begin(), m_goto.end(), t);
@@ -137,10 +137,12 @@ void AugmentedProduction::print_productions(int id)
 	for(int i = 0, j = m_production.m_rules.size(); i < j; ++i)
 	{
 		
-		temprule = m_production.m_rules[i];
-		temprule.insert(m_marker,".");
 		if(m_all_rules || i == m_which_rule)
+		{
+			temprule = m_production.m_rules[i];
+			temprule.insert(m_marker,".");
 			cout << temprule;
+		}
 		if(m_all_rules && (i < j - 1))
 			cout << " | ";
 	}

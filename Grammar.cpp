@@ -158,21 +158,15 @@ void Grammar::m_generate_lr()
 	AugmentedProduction I(start, m_production);
 	I.closure();
 	m_lr_closures.push_back(I);
-	
 	bool changed = true;
 	while(changed)
 	{
 		changed = false;
 		for(int i = 0, j = m_lr_closures.size(); i < j; ++i)
 		{
-			try{
+			//cout << "for'in" << endl;
 			changed |= m_lr_closures[i].goto_all(m_lr_closures);
 			m_lr_closures[i].closure();
-			}
-			catch(exception & e)
-			{
-				cout << "we segfaulting" << e.what() << endl;
-			}
 		}
 	}
 }
