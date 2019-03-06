@@ -182,6 +182,101 @@ S -> cAd.
 LR(0) sets for item I6
 A -> ab.
 
+------------------------------
+Grammar Test 3 (fig 4.1)
+E -> E+T | T
+FIRST(E) = { (, i }
+FOLLOW(E) = { $, ), + }
+
+F -> (E) | i
+FIRST(F) = { (, i }
+FOLLOW(F) = { $, ), *, + }
+
+S -> E
+FIRST(S) = { (, i }
+FOLLOW(S) = { $ }
+
+T -> T*F | F
+FIRST(T) = { (, i }
+FOLLOW(T) = { $, ), *, + }
+
+LR(0) sets for item I0
+S -> .E
+E -> .E+T | .T
+T -> .T*F | .F
+F -> .(E) | .i
+GOTO( I0, E ) = I1
+GOTO( I0, E ) = I2
+GOTO( I0, T ) = I3
+GOTO( I0, T ) = I4
+GOTO( I0, F ) = I5
+GOTO( I0, ( ) = I6
+GOTO( I0, i ) = I7
+
+LR(0) sets for item I1
+S -> E.
+
+LR(0) sets for item I2
+E -> E.+T
+GOTO( I2, + ) = I8
+
+LR(0) sets for item I3
+E -> T.
+
+LR(0) sets for item I4
+T -> T.*F
+GOTO( I4, * ) = I9
+
+LR(0) sets for item I5
+T -> F.
+
+LR(0) sets for item I6
+F -> (.E)
+E -> .E+T | .T
+T -> .T*F | .F
+F -> .(E) | .i
+GOTO( I6, E ) = I10
+GOTO( I6, E ) = I2
+GOTO( I6, T ) = I3
+GOTO( I6, T ) = I4
+GOTO( I6, F ) = I5
+GOTO( I6, ( ) = I6
+GOTO( I6, i ) = I7
+
+LR(0) sets for item I7
+F -> i.
+
+LR(0) sets for item I8
+E -> E+.T
+T -> .T*F | .F
+F -> .(E) | .i
+GOTO( I8, T ) = I11
+GOTO( I8, T ) = I4
+GOTO( I8, F ) = I5
+GOTO( I8, ( ) = I6
+GOTO( I8, i ) = I7
+
+LR(0) sets for item I9
+T -> T*.F
+F -> .(E) | .i
+GOTO( I9, F ) = I12
+GOTO( I9, ( ) = I6
+GOTO( I9, i ) = I7
+
+LR(0) sets for item I10
+F -> (E.)
+GOTO( I10, ) ) = I13
+
+LR(0) sets for item I11
+E -> E+T.
+
+LR(0) sets for item I12
+T -> T*F.
+
+LR(0) sets for item I13
+F -> (E).
+
+
 ```
 
 # Complexity
