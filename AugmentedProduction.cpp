@@ -93,12 +93,12 @@ bool AugmentedProduction::goto_all(vector<AugmentedProduction*>& augvec)
 	//else it's a reduce state, which doesn't have any goto
 	
 	//goto on all of the closure productions
-	for(int it = 0; it < m_closure.size(); ++it)
+	for(auto & prod : m_closure)
 	{
-		//if(!prod.valid()) continue;
-		for(int i = 0, j = m_closure[i].m_rules.size(); i < j; ++i)
+		if(!prod.valid()) continue;
+		for(int i = 0, j = prod.m_rules.size(); i < j; ++i)
 		{
-			changed |= add_goto(augvec, m_closure[it], i, 1);
+			changed |= add_goto(augvec, prod, i, 1);
 		}
 	}
 	return changed;

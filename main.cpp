@@ -43,6 +43,20 @@ int main(int argc, char* argv[])
 	cout << "Grammar Test 2 (ex 4.29)" << endl;
 	G2.generate_sets();
 	G2.print_sets();
+
+
+	cout << "------------------------------" << endl;
+	//This grammar is from Figure 4.1 of the Dragon Book
+	Grammar G3;
+	G3.add_production("S->E");
+	G3.add_production("E->E*T|T");
+	G3.add_production("T->T*F|F");
+	G3.add_production("F->(E)|i");
+	
+	cout << "Grammar Test 3 (fig 4.1)" << endl;
+	G3.generate_sets();
+	G3.print_sets();
+
 	
 	return 0;
 }
