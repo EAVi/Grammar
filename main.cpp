@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
 	//This grammar is from Figure 4.1 of the Dragon Book
 	Grammar G3;
 	G3.add_production("S->E");
-	G3.add_production("E->E*T|T");
+	G3.add_production("E->E+T|T");
 	G3.add_production("T->T*F|F");
 	G3.add_production("F->(E)|i");
 	

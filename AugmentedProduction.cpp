@@ -134,7 +134,8 @@ bool AugmentedProduction::add_goto(vector<AugmentedProduction*>& augvec, const P
 bool AugmentedProduction::operator==(const AugmentedProduction & rhs)const
 {
 	return (m_production == rhs.m_production
-		&& m_all_rules == rhs.m_all_rules
+		&& m_all_rules == rhs.m_all_rules 
+		&& m_which_rule == rhs.m_which_rule
 		&& m_marker == rhs.m_marker);
 }
 
