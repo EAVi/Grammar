@@ -7,8 +7,7 @@ using namespace std;
 
 bool operator==(Transition lhs, Transition rhs)
 {
-	return (lhs.X == rhs.X);
-		//&& lhs.index == rhs.index);
+	return (lhs.X == rhs.X && lhs.index == rhs.index);
 }
 
 AugmentedProduction::AugmentedProduction()
