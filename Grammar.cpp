@@ -9,6 +9,14 @@ Grammar::Grammar()
 	m_initial_symbol = '\0';
 }
 
+Grammar::~Grammar()
+{
+	for(auto ptr : m_lr_closures)
+	{
+		delete ptr;
+	}
+}
+
 Grammar::Grammar(std::string filename)
 {
 	m_production = set<Production>();
@@ -47,7 +55,7 @@ void Grammar::print_sets()
 	for(int i = 0, j = m_lr_closures.size(); i < j; ++i)
 	{
 		cout << "LR(0) sets for item I" << i << endl;
-		m_lr_closures[i].print_productions(i);
+		m_lr_closures[i]->print_productions(i);
 	}
 }
 
@@ -155,8 +163,8 @@ bool Grammar::m_follow()
 void Grammar::m_generate_lr()
 {
 	Production start = *find_production(m_initial_symbol);
-	AugmentedProduction I(start, m_production);
-	I.closure();
+	AugmentedProduction* I = new AugmentedProduction(start, &m_production);
+	I->closure();
 	m_lr_closures.push_back(I);
 	bool changed = true;
 	while(changed)
@@ -165,8 +173,8 @@ void Grammar::m_generate_lr()
 		for(int i = 0, j = m_lr_closures.size(); i < j; ++i)
 		{
 			//cout << "for'in" << endl;
-			changed |= m_lr_closures[i].goto_all(m_lr_closures);
-			m_lr_closures[i].closure();
+			changed |= m_lr_closures[i]->goto_all(m_lr_closures);
+			m_lr_closures[i]->closure();
 		}
 	}
 }

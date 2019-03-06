@@ -25,23 +25,25 @@ public:
 	* rule is the specific grammar rule
 	* marker is the position of some imaginary dot/period
 	*/
-	AugmentedProduction(const Production & p, const std::set<Production>& s, int rule = -1, int marker = 0);
+	AugmentedProduction();
+	AugmentedProduction(const Production & p, const std::set<Production>* s, int rule = -1, int marker = 0);
+	~AugmentedProduction();
 	void closure();//generate the closure set
 	bool closure_exists(std::set<Production>::iterator it);
-	bool goto_all(std::vector<AugmentedProduction>& augvec);
-	bool add_goto(std::vector<AugmentedProduction>& augvec, Production& p, int rule = -1, int marker = 0);//add closure if it doesnt exist already
+	bool goto_all(std::vector<AugmentedProduction*>& augvec);
+	bool add_goto(std::vector<AugmentedProduction*>& augvec, const Production& p, int rule = -1, int marker = 0);//add closure if it doesnt exist already
 	bool operator==(const AugmentedProduction & rhs)const;
 	std::set<Production>::iterator find_production(char c);//find production given character
 	void print_productions(int id);//print the goto and closure sets
+	int check_exists(std::vector<AugmentedProduction*>& augvec, AugmentedProduction* candidate);//returns index of existing candidate
 private:
 	bool m_all_rules;
 	int m_which_rule;//the specific rule on the production
 	Production m_production;
 	int m_marker;//position where the "period" is
-	const std::set<Production>& m_productions;//a reference to all productions in the grammar
+	const std::set<Production>* m_productions;//a reference to all productions in the grammar
 	mutable std::vector<Production> m_closure;//closure of the augmented production
 	mutable std::vector<Transition> m_goto;//goto of the augmented production
-	friend AugmentedProduction;
 };
 
 #endif

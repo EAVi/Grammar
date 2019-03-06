@@ -11,6 +11,7 @@ class Grammar
 {
 public:
 	Grammar();
+	~Grammar();
 	Grammar(std::string filename);//constructor calling a file to read
 	void read_file(std::string filename);//read productions from file
 	void add_production(std::string s);//add a production to the grammar
@@ -20,7 +21,7 @@ public:
 private:
 	//terminals and nonterminals cannot have anything in common
 	std::set<Production> m_production;
-	std::vector<AugmentedProduction> m_lr_closures;//list of lr sets
+	std::vector<AugmentedProduction*> m_lr_closures;//list of lr sets
 	char m_initial_symbol;//initial production index
 	void m_generate_lr();//generate the LR(0) sets
 	void m_generate_first();//calls the recursive algorithm

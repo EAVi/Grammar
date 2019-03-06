@@ -1,6 +1,7 @@
 #include"AugmentedProduction.h"
 #include<iostream>
 #include<queue>
+#include<algorithm>
 
 using namespace std;
 
@@ -10,7 +11,11 @@ bool operator==(Transition lhs, Transition rhs)
 		//&& lhs.index == rhs.index);
 }
 
-AugmentedProduction::AugmentedProduction(const Production & p, const set<Production>& s, int rule, int marker)
+AugmentedProduction::AugmentedProduction()
+	: m_production(nullptr)
+{}
+
+AugmentedProduction::AugmentedProduction(const Production & p, const set<Production>* s, int rule, int marker)
 	: m_productions(s)
 {
 	m_production = p;
@@ -20,6 +25,9 @@ AugmentedProduction::AugmentedProduction(const Production & p, const set<Product
 	m_marker = marker;
 	//if(m_all_rules) marker = 0;
 }
+
+AugmentedProduction::~AugmentedProduction()
+{}
 
 void AugmentedProduction::closure()
 {
@@ -46,7 +54,7 @@ void AugmentedProduction::closure()
 		while(!q.empty())
 		{
 			auto it = find_production(q.front());
-			if (it != m_productions.end() && !closure_exists(it))
+			if (it != m_productions->end() && !closure_exists(it))
 			{
 				m_closure.push_back(*it);
 				//add all starting elements to the queue for later checking
@@ -65,7 +73,7 @@ bool AugmentedProduction::closure_exists(set<Production>::iterator it)
 	return (find(m_closure.begin(), m_closure.end(), *it) != m_closure.end());
 }
 
-bool AugmentedProduction::goto_all(vector<AugmentedProduction>& augvec)
+bool AugmentedProduction::goto_all(vector<AugmentedProduction*>& augvec)
 {
 	bool changed = false;
 	//the top production first
@@ -85,31 +93,38 @@ bool AugmentedProduction::goto_all(vector<AugmentedProduction>& augvec)
 	//else it's a reduce state, which doesn't have any goto
 	
 	//goto on all of the closure productions
-	for(auto & prod : m_closure)
+	for(int it = 0; it < m_closure.size(); ++it)
 	{
-		for(int i = 0, j = prod.m_rules.size(); i < j; ++i)
+		//if(!prod.valid()) continue;
+		for(int i = 0, j = m_closure[i].m_rules.size(); i < j; ++i)
 		{
-			changed |= add_goto(augvec, prod, i, 1);
+			changed |= add_goto(augvec, m_closure[it], i, 1);
 		}
 	}
 	return changed;
 }
 
-bool AugmentedProduction::add_goto(vector<AugmentedProduction>& augvec, Production& p, int rule, int marker)
+bool AugmentedProduction::add_goto(vector<AugmentedProduction*>& augvec, const Production& p, int rule, int marker)
 {
 	if(rule >= p.m_rules.size()) return false;
-	AugmentedProduction candidate(p, m_productions, rule, marker);
-	auto augment_it = find(augvec.begin(), augvec.end(), candidate);
-	if(augment_it == augvec.end())
+	AugmentedProduction* candidate = new AugmentedProduction(p, m_productions, rule, marker);
+	int candidate_distance = check_exists(augvec, candidate);
+	if(candidate_distance == -1)
 	{
-		AugmentedProduction a(p, m_productions, rule, marker);
-		Transition t = {p.m_rules[rule][marker - 1], (int)augvec.size()};
+		Transition t;
+		t.X = p.m_rules[rule][marker - 1];
+		t.index = (int)augvec.size();
 		m_goto.push_back(t);
 		augvec.push_back(candidate);
+
 		return true;
 	}
+	delete candidate;
+
 	//try to add the transition
-	Transition t = {p.m_rules[rule][marker - 1], (int)distance(augvec.begin(), augment_it)};
+	Transition t;
+	t.X = p.m_rules[rule][marker - 1];
+	t.index = candidate_distance;
 	auto trans_it = find(m_goto.begin(), m_goto.end(), t);
 	if(trans_it == m_goto.end())//t not found in m_goto
 		m_goto.push_back(t);
@@ -126,7 +141,7 @@ bool AugmentedProduction::operator==(const AugmentedProduction & rhs)const
 set<Production>::iterator AugmentedProduction::find_production(char c)
 {
 	Production p(c);
-	return m_productions.find(p);
+	return m_productions->find(p);
 }
 
 void AugmentedProduction::print_productions(int id)
@@ -168,4 +183,14 @@ void AugmentedProduction::print_productions(int id)
 		cout << "GOTO( I" << id << ", " << val.X << " ) = I" << val.index << endl;
 	}
 	cout << endl;
+}
+
+int AugmentedProduction::check_exists(vector<AugmentedProduction*>& augvec, AugmentedProduction* candidate)
+{
+	for(int i = 0, j = augvec.size(); i < j; ++i)
+	{
+		if(*augvec[i] == *candidate)
+			return i;
+	}
+	return -1;
 }

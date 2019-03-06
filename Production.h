@@ -18,8 +18,8 @@ public:
 	void read_rule(std::string rule);//read the entire production rule. 
 	bool operator<(const Production & rhs)const;
 	bool operator==(const Production & rhs)const;
-	void print();
-	char get_symbol();
+	void print() const;
+	char get_symbol() const;
 	const std::vector<std::string> & get_rules() const;
 	const std::set<char> & get_first() const;
 	const std::set<char> & get_follow() const;
@@ -29,13 +29,12 @@ public:
 	void add_first(const std::set<char>& s)const;
 	bool add_follow(char c)const;//returns whether the set changed
 	bool add_follow(const std::set<char> s)const;//returns whether the set changed
-	
+	bool valid()const;//check if the production has no issues
 protected:
 	char m_symbol;
-	std::vector<std::string> m_rules;//rules of production
+	mutable std::vector<std::string> m_rules;//rules of production
 	mutable std::set<char> m_first;//mutable because std::set is strict with constness
 	mutable std::set<char> m_follow;
-	friend Production;
 	friend AugmentedProduction;
 };
 

@@ -14,6 +14,9 @@ Production::Production()
 Production::Production(char c)
 {
 	m_symbol = c;
+	m_rules = vector<string>();
+	m_first = set<char>();
+	m_follow = set<char>();
 }
 
 Production::Production(std::string rule)
@@ -61,7 +64,7 @@ bool Production::operator==(const Production & rhs) const
 	return this->m_symbol == rhs.m_symbol;
 }
 
-void Production::print()
+void Production::print() const
 {
 	cout << m_symbol << " -> ";
 	for(int i = 0, j = m_rules.size(); i < j; ++i)
@@ -91,7 +94,7 @@ void Production::print()
 	cout << " }" << endl << endl;
 }
 
-char Production::get_symbol()
+char Production::get_symbol() const
 {
 	return m_symbol;
 }
@@ -148,4 +151,13 @@ bool Production::add_follow(const std::set<char> s) const
 		}
 	}
 	return changed;
+}
+
+bool Production::valid() const
+{
+	if(m_symbol == '\0') return false;
+	for( auto & rule : m_rules )
+		if (rule == "" || rule.length() == 0)
+			return false;
+	return true;
 }
