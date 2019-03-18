@@ -49,8 +49,8 @@ public:
 	int check_exists(std::vector<AugmentedProduction*>& augvec, AugmentedProduction* candidate);//returns index of existing candidate
 	
 	//LR0 table construction helpers
-	std::string get_action(char X);
-	std::string get_reduce(char X);
+	std::string get_action(char X, bool SLR = false);
+	std::string get_reduce(char X, bool SLR = false);
 private:
 	std::set<Kernel> m_kernel;
 	const std::set<Production>* m_productions;//a reference to all productions in the grammar

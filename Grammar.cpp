@@ -79,9 +79,11 @@ set<Production>::iterator Grammar::find_production(char c)
 	return m_production.find(p);
 }
 
-void Grammar::print_LR_table()
+void Grammar::print_LR_table(bool SLR)
 {
-	cout << "| LR(0) item";
+	if(!SLR)
+		cout << "| LR(0) item";
+	else cout << "| SLR item";
 	
 	//generate list of nonterminals
 	vector<char> nonterminals;
@@ -115,12 +117,12 @@ void Grammar::print_LR_table()
 	{
 		cout << "| " <<i++;
 		for(auto& c : m_terminal_symbols)
-			cout << " | " << augprod->get_action(c);
+			cout << " | " << augprod->get_action(c,true);
 		
 		cout << " | " << augprod->get_action(end_symbol);//$
 		
 		for(auto& c : nonterminals)
-			cout << " | " << augprod->get_action(c);
+			cout << " | " << augprod->get_action(c,true);
 		cout << " |" << endl;
 	}
 }

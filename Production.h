@@ -32,6 +32,7 @@ public:
 	bool add_follow(char c)const;//returns whether the set changed
 	bool add_follow(const std::set<char> s)const;//returns whether the set changed
 	bool valid()const;//check if the production has no issues
+	bool check_follow(const char & c) const;//returns if character exists in follow
 protected:
 	char m_symbol;
 	mutable std::vector<std::string> m_rules;//rules of production

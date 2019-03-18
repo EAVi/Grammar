@@ -18,7 +18,7 @@ public:
 	void generate_sets();
 	void print_sets();//print the first and follow sets
 	std::set<Production>::iterator find_production(char c);//find production of specified 
-	void print_LR_table();
+	void print_LR_table(bool SLR = false);
 	static const char end_symbol = '$';
 private:
 	//terminals and nonterminals cannot have anything in common

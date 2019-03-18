@@ -178,3 +178,8 @@ bool Production::valid() const
 			return false;
 	return true;
 }
+
+bool Production::check_follow(const char & c) const
+{
+	return(m_follow.find(c) != m_follow.end());
+}

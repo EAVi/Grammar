@@ -56,6 +56,7 @@ int main(int argc, char* argv[])
 	cout << "Grammar Test 3 (fig 4.1)" << endl;
 	G3.generate_sets();
 	G3.print_sets();
+	G3.print_LR_table();
 	
 	cout << "------------------------------" << endl;
 	Grammar G4;

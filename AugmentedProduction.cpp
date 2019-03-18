@@ -291,7 +291,7 @@ int AugmentedProduction::check_exists(vector<AugmentedProduction*>& augvec, Augm
 	return -1;
 }
 
-string AugmentedProduction::get_action(char X)
+string AugmentedProduction::get_action(char X, bool SLR)
 {
 	string action = "";
 	bool is_terminal = (find_production(X) == m_productions->end());
@@ -305,11 +305,11 @@ string AugmentedProduction::get_action(char X)
 		}
 	}
 	if(is_terminal)//if nonterminal
-		action += get_reduce(X);
+		action += get_reduce(X,SLR);
 	return action;
 }
 
-string AugmentedProduction::get_reduce(char X)
+string AugmentedProduction::get_reduce(char X, bool SLR)
 {
 	string reduce = "";
 	//check if any productions have a reduce condition
@@ -317,7 +317,8 @@ string AugmentedProduction::get_reduce(char X)
 	{
 		//all rules means they're all at position 0, so we can skip that part
 		if(kernel.rule != Kernel::all_rules
-			&& kernel.marker == kernel.production.m_rules[kernel.rule].length())
+			&& kernel.marker == kernel.production.m_rules[kernel.rule].length()
+			&& (!SLR || kernel.production.check_follow(X)))
 		{
 			int prod_id = kernel.production.m_id + kernel.rule;
 			if(prod_id == 0 && X == '$')
