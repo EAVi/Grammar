@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
 	
 	cout << "------------------------------" << endl;
 	Grammar G4;
-	G4.add_production("S->E");
+	G4.add_production("S->A");
 	G4.add_production("A->B|C");
 	G4.add_production("B->D0|EB|BED");
 	G4.add_production("C->F1|GC|CGF");
