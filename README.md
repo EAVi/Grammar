@@ -155,31 +155,35 @@ FIRST(S) = { c }
 FOLLOW(S) = { $ }
 
 LR(0) sets for item I0
+kernel productions:
 S -> .cAd
 GOTO( I0, c ) = I1
 
 LR(0) sets for item I1
+kernel productions:
 S -> c.Ad
+closure productions:
 A -> .ab | .a
 GOTO( I1, A ) = I2
 GOTO( I1, a ) = I3
-GOTO( I1, a ) = I4
 
 LR(0) sets for item I2
+kernel productions:
 S -> cA.d
-GOTO( I2, d ) = I5
+GOTO( I2, d ) = I4
 
 LR(0) sets for item I3
+kernel productions:
 A -> a.b
-GOTO( I3, b ) = I6
+A -> a.
+GOTO( I3, b ) = I5
 
 LR(0) sets for item I4
-A -> a.
-
-LR(0) sets for item I5
+kernel productions:
 S -> cAd.
 
-LR(0) sets for item I6
+LR(0) sets for item I5
+kernel productions:
 A -> ab.
 
 ------------------------------
@@ -201,80 +205,91 @@ FIRST(T) = { (, i }
 FOLLOW(T) = { $, ), *, + }
 
 LR(0) sets for item I0
+kernel productions:
 S -> .E
+closure productions:
 E -> .E+T | .T
 T -> .T*F | .F
 F -> .(E) | .i
-GOTO( I0, E ) = I1
+GOTO( I0, ( ) = I1
 GOTO( I0, E ) = I2
-GOTO( I0, T ) = I3
+GOTO( I0, F ) = I3
 GOTO( I0, T ) = I4
-GOTO( I0, F ) = I5
-GOTO( I0, ( ) = I6
-GOTO( I0, i ) = I7
+GOTO( I0, i ) = I5
 
 LR(0) sets for item I1
-S -> E.
-
-LR(0) sets for item I2
-E -> E.+T
-GOTO( I2, + ) = I8
-
-LR(0) sets for item I3
-E -> T.
-
-LR(0) sets for item I4
-T -> T.*F
-GOTO( I4, * ) = I9
-
-LR(0) sets for item I5
-T -> F.
-
-LR(0) sets for item I6
+kernel productions:
 F -> (.E)
+closure productions:
 E -> .E+T | .T
 T -> .T*F | .F
 F -> .(E) | .i
-GOTO( I6, E ) = I10
-GOTO( I6, E ) = I2
-GOTO( I6, T ) = I3
-GOTO( I6, T ) = I4
-GOTO( I6, F ) = I5
-GOTO( I6, ( ) = I6
-GOTO( I6, i ) = I7
+GOTO( I1, ( ) = I1
+GOTO( I1, E ) = I6
+GOTO( I1, F ) = I3
+GOTO( I1, T ) = I4
+GOTO( I1, i ) = I5
 
-LR(0) sets for item I7
+LR(0) sets for item I2
+kernel productions:
+E -> E.+T
+S -> E.
+GOTO( I2, + ) = I7
+
+LR(0) sets for item I3
+kernel productions:
+T -> F.
+
+LR(0) sets for item I4
+kernel productions:
+E -> T.
+T -> T.*F
+GOTO( I4, * ) = I8
+
+LR(0) sets for item I5
+kernel productions:
 F -> i.
 
-LR(0) sets for item I8
+LR(0) sets for item I6
+kernel productions:
+E -> E.+T
+F -> (E.)
+GOTO( I6, ) ) = I9
+GOTO( I6, + ) = I7
+
+LR(0) sets for item I7
+kernel productions:
 E -> E+.T
+closure productions:
 T -> .T*F | .F
 F -> .(E) | .i
-GOTO( I8, T ) = I11
-GOTO( I8, T ) = I4
-GOTO( I8, F ) = I5
-GOTO( I8, ( ) = I6
-GOTO( I8, i ) = I7
+GOTO( I7, ( ) = I1
+GOTO( I7, F ) = I3
+GOTO( I7, T ) = I10
+GOTO( I7, i ) = I5
+
+LR(0) sets for item I8
+kernel productions:
+T -> T*.F
+closure productions:
+F -> .(E) | .i
+GOTO( I8, ( ) = I1
+GOTO( I8, F ) = I11
+GOTO( I8, i ) = I5
 
 LR(0) sets for item I9
-T -> T*.F
-F -> .(E) | .i
-GOTO( I9, F ) = I12
-GOTO( I9, ( ) = I6
-GOTO( I9, i ) = I7
+kernel productions:
+F -> (E).
 
 LR(0) sets for item I10
-F -> (E.)
-GOTO( I10, ) ) = I13
+kernel productions:
+E -> E+T.
+T -> T.*F
+GOTO( I10, * ) = I8
 
 LR(0) sets for item I11
-E -> E+T.
-
-LR(0) sets for item I12
+kernel productions:
 T -> T*F.
-
-LR(0) sets for item I13
-F -> (E).
 
 
 ```
