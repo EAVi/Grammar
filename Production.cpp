@@ -6,6 +6,7 @@ using namespace std;
 Production::Production()
 {
 	m_symbol = 0;
+	m_id = 0;
 	m_rules = vector<string>();
 	m_first = set<char>();
 	m_follow = set<char>();
@@ -14,22 +15,29 @@ Production::Production()
 Production::Production(char c)
 {
 	m_symbol = c;
+	m_id = 0;
 	m_rules = vector<string>();
 	m_first = set<char>();
 	m_follow = set<char>();
 }
 
-Production::Production(std::string rule)
+Production::Production(string rule, int id)
 {
 	m_symbol = 0;
+	m_id = id;
 	m_rules = vector<string>();
 	m_first = set<char>();
 	m_follow = set<char>();
 
-	read_rule(rule);
+	read_rule(rule, id);
 }
 
-void Production::read_rule(std::string rule)
+void Production::setID(int id)
+{
+	m_id = id;
+}
+
+void Production::read_rule(std::string rule, int id)
 {
 	const string rightarrow = "->";//the rightarrow delimiter
 	const string nextproduction = "|";//the symbol representing a different production
@@ -112,6 +120,15 @@ const set<char> & Production::get_first() const
 const set<char> & Production::get_follow() const
 {
 	return m_follow;
+}
+
+set<char> Production::get_alphabet() const
+{
+	set<char> symbols;
+	for(auto & rule : m_rules)
+		for(auto & c : rule)
+			symbols.insert(c);
+	return symbols;
 }
 
 void Production::add_first(char c) const

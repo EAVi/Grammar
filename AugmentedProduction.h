@@ -12,6 +12,18 @@ struct Transition
 	int index;
 };
 
+
+//a kernel item in an augmented production
+struct Kernel
+{
+	Production production;//pointer to a production
+	int rule;//which rule
+	int marker;//position of the period
+	static const int all_rules = -1;
+	bool operator<(const Kernel & rhs) const;
+	bool operator==(const Kernel & rhs) const;
+};
+
 bool operator==(Transition lhs, Transition rhs);
 
 //production with added "marker" which keeps track of the position in the production
@@ -19,28 +31,28 @@ class AugmentedProduction
 {
 public:
 	/*
-	An augmented production zones in on specific symbols on one or more grammar rules in a production
-	* p is the production in question
-	* s is the set of productions from the grammar
-	* rule is the specific grammar rule
-	* marker is the position of some imaginary dot/period
+	An augmented production is made up of a set of kernels and its closures
 	*/
 	AugmentedProduction();
-	AugmentedProduction(const Production & p, const std::set<Production>* s, int rule = -1, int marker = 0);
+	AugmentedProduction(const Production & p, const std::set<Production>* s, int rule = Kernel::all_rules, int marker = 0);//construct using a single rule 
+	AugmentedProduction(std::set<Kernel> & k, const std::set<Production>* s);//construct using a complete kernel
 	~AugmentedProduction();
 	void closure();//generate the closure set
 	bool closure_exists(std::set<Production>::iterator it);
 	bool goto_all(std::vector<AugmentedProduction*>& augvec);
-	bool add_goto(std::vector<AugmentedProduction*>& augvec, const Production& p, int rule = -1, int marker = 0);//add closure if it doesnt exist already
+	std::set<char> get_alphabet();//get an alphabet of the current item
+	void add_to_kernel(char & X, std::set<Kernel>& kernelset);//helper which constructs a kernel, given a specified character
+	bool add_goto(std::vector<AugmentedProduction*>& augvec, char & X, std::set<Kernel>& kernelset);//add closure if it doesnt exist already
 	bool operator==(const AugmentedProduction & rhs)const;
 	std::set<Production>::iterator find_production(char c);//find production given character
 	void print_productions(int id);//print the goto and closure sets
 	int check_exists(std::vector<AugmentedProduction*>& augvec, AugmentedProduction* candidate);//returns index of existing candidate
+	
+	//LR0 table construction helpers
+	std::string get_action(char X);
+	std::string get_reduce(char X);
 private:
-	bool m_all_rules;
-	int m_which_rule;//the specific rule on the production
-	Production m_production;
-	int m_marker;//position where the "period" is
+	std::set<Kernel> m_kernel;
 	const std::set<Production>* m_productions;//a reference to all productions in the grammar
 	mutable std::vector<Production> m_closure;//closure of the augmented production
 	mutable std::vector<Transition> m_goto;//goto of the augmented production

@@ -56,7 +56,28 @@ int main(int argc, char* argv[])
 	cout << "Grammar Test 3 (fig 4.1)" << endl;
 	G3.generate_sets();
 	G3.print_sets();
+	
+	cout << "------------------------------" << endl;
+	Grammar G4;
+	G4.add_production("S->E");
+	G4.add_production("A->B|C");
+	G4.add_production("B->D0|EB|BED");
+	G4.add_production("C->F1|GC|CGF");
+	G4.add_production("D->D0|?");
+	G4.add_production("E->EE|0E1|1E0");
+	G4.add_production("F->F1|?");
+	G4.add_production("G->GG|0G1|1G0");
+	cout << "Grammar Test 4 (num 0s != num 1s)" << endl;
+	G4.generate_sets();
+	G4.print_LR_table();
 
+	cout << "------------------------------" << endl;
+	Grammar G5;
+	G5.add_production("S->P");
+	G5.add_production("P->1P1|0P0|1|0|?");
+	cout << "Grammar Test 4 (Palindrome of 0s and 1s)" << endl;
+	G5.generate_sets();
+	G5.print_LR_table();
 	
 	return 0;
 }

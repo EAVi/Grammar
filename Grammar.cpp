@@ -7,6 +7,7 @@ Grammar::Grammar()
 {
 	m_production = set<Production>();
 	m_initial_symbol = '\0';
+	m_production_number = 0;
 }
 
 Grammar::~Grammar()
@@ -21,22 +22,35 @@ Grammar::Grammar(std::string filename)
 {
 	m_production = set<Production>();
 	m_initial_symbol = '\0';
+	m_production_number = 0;
 	read_file(filename);
 }
 
 void Grammar::read_file(std::string filename)
 {
-	
+	//coming soon
 }
 
 void Grammar::add_production(std::string s)
 {
-	Production p(s);
+	Production p(s, m_production_number);
 	m_production.insert(p);
 	
 	//the first element added to the array will become the starting symbol
 	if(m_production.size() == 1)
 		m_initial_symbol = p.get_symbol();
+	
+	//next production will have appended number
+	m_production_number += p.get_rules().size();
+	
+	//remove nonterminal from terminal set (if exists)
+	m_terminal_symbols.erase(p.get_symbol());
+	//put the terminal onto the set
+	for(auto & c : p.get_alphabet())
+	{
+		if(find_production(c) == m_production.end())//terminal
+			m_terminal_symbols.insert(c);
+	}
 }
 
 void Grammar::generate_sets()
@@ -63,6 +77,52 @@ set<Production>::iterator Grammar::find_production(char c)
 {
 	Production p(c);
 	return m_production.find(p);
+}
+
+void Grammar::print_LR_table()
+{
+	cout << "| LR(0) item";
+	
+	//generate list of nonterminals
+	vector<char> nonterminals;
+	for(auto& production : m_production)
+	{
+		nonterminals.push_back(production.get_symbol());
+	}
+	
+	//print the table
+	
+	//first row's terminals
+	for(auto& c : m_terminal_symbols)
+		cout << " | " << c;
+	
+	cout << " | " << end_symbol;//$
+	
+	//first row's nonterminals
+	for(auto& c : nonterminals)
+		cout << " | " << c;
+	cout << " |" << endl;
+	
+	//print the horizontal line
+	cout << "|";
+	for (int i = 0, j = 2 + m_terminal_symbols.size() + nonterminals.size(); i < j; ++i)
+		cout << " --- |";
+	cout << endl;
+	
+	//print the table
+	int i = 0;
+	for(auto & augprod : m_lr_closures)
+	{
+		cout << "| " <<i++;
+		for(auto& c : m_terminal_symbols)
+			cout << " | " << augprod->get_action(c);
+		
+		cout << " | " << augprod->get_action(end_symbol);//$
+		
+		for(auto& c : nonterminals)
+			cout << " | " << augprod->get_action(c);
+		cout << " |" << endl;
+	}
 }
 
 void Grammar::m_generate_first()
@@ -166,6 +226,7 @@ void Grammar::m_generate_lr()
 	AugmentedProduction* I = new AugmentedProduction(start, &m_production);
 	I->closure();
 	m_lr_closures.push_back(I);
+	m_lr_closures[0]->goto_all(m_lr_closures);
 	bool changed = true;
 	while(changed)
 	{
@@ -173,8 +234,8 @@ void Grammar::m_generate_lr()
 		for(int i = 0, j = m_lr_closures.size(); i < j; ++i)
 		{
 			//cout << "for'in" << endl;
-			changed |= m_lr_closures[i]->goto_all(m_lr_closures);
 			m_lr_closures[i]->closure();
+			changed |= m_lr_closures[i]->goto_all(m_lr_closures);
 		}
 	}
 }
